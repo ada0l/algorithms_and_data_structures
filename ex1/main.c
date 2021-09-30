@@ -305,8 +305,7 @@ void market_serve_current_customers(Market* market)
     }
 }
 
-// Returns false if all cash registers are already full
-bool market_add_new_customer(Market* market, Customer* customers)
+void market_add_new_customer(Market* market, Customer* customers)
 {
     Cashbox* priority_cashbox = NULL;
 
@@ -333,19 +332,13 @@ bool market_add_new_customer(Market* market, Customer* customers)
         queue_push(priority_cashbox->queue, customers);
         ++priority_cashbox->num_of_served_customers;
     }
-
-    return priority_cashbox != NULL;
 }
 
-bool market_add_new_customers(Market* market, Queue* queue)
+void market_add_new_customers(Market* market, Queue* queue)
 {
-    bool result = true;
     while (queue_get_size(queue) > 0) {
-        if (!market_add_new_customer(market, queue_pop(queue))) {
-            result = false;
-        }
+        market_add_new_customer(market, queue_pop(queue));
     }
-    return result;
 }
 
 void market_display_numbers_header(Market* market)
@@ -428,6 +421,13 @@ int market_get_the_number_of_customers_in_queue(Market* market)
         }
     }
     return customers_in_queue;
+}
+
+bool market_can_push_queue(Market* market, Queue* queue)
+{
+    return market_get_the_number_of_customers_in_queue(market)
+        + queue_get_size(queue)
+        >= market->max_queue_size * market->size;
 }
 
 /*
@@ -543,7 +543,6 @@ int main(int argc, char* argv[])
         settings_path = "settings.txt";
     }
 
-    printf("%s", settings_path);
     Settings* settings = settings_new();
     switch (settings_read_from_file(settings, settings_path)) {
     case SETTINGS_CANNOT_READ:
@@ -615,15 +614,14 @@ int main(int argc, char* argv[])
             settings->max_cashier_queue);
 
         market_serve_current_customers(market);
-
         printf("\n");
 
-        bool error_when_add_new
-            = !market_add_new_customers(market, next_customers);
-        if (error_when_add_new) {
+        if (market_can_push_queue(market, next_customers)) {
             printf("GAME OVER\nPOKA, DURAK");
+            queue_free(next_customers);
             break;
         }
+        market_add_new_customers(market, next_customers);
 
         queue_free_without_content(next_customers);
 
