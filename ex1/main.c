@@ -2,7 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if !_WIN32
 #include <unistd.h>
+#endif
 
 /*
  * Util
@@ -626,7 +629,10 @@ int main(int argc, char* argv[])
         queue_free_without_content(next_customers);
 
         fflush(stdout);
+
+#if !_WIN32
         sleep(1);
+#endif
 
 #if __unix__ || __linux__ || __APPLE__ || __MACH__
         system("clear");
