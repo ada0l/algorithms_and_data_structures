@@ -5,6 +5,39 @@
 #include <unistd.h>
 
 /*
+ * Util
+ */
+int get_count_of_digits(int number)
+{
+    int count = (number == 0) ? 1 : 0;
+    while (number != 0) {
+        count++;
+        number /= 10;
+    }
+    return count;
+}
+
+bool is_valid_int(char* str)
+{
+    int len = strlen(str) - 1;
+    if (len == 0) {
+        return false;
+    }
+    for (int i = 0; i < len - 1; ++i) {
+        if (!('0' <= str[i] && str[i] <= '9')) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void poka_durak()
+{
+    printf("POKA, DURAK");
+    exit(EXIT_FAILURE);
+}
+
+/*
  * Random
  */
 
@@ -406,6 +439,7 @@ typedef struct Settings {
     int max_cashier_queue;
     int max_cashiers;
     int max_next_customers;
+    bool error;
 } Settings;
 
 Settings* settings_new()
@@ -413,48 +447,81 @@ Settings* settings_new()
     Settings* settings = (Settings*)malloc(sizeof(Settings));
     settings->max_customer_time = settings->max_cashier_queue
         = settings->max_cashiers = settings->max_next_customers = -1;
+    settings->error = false;
     return settings;
 }
 
 void settings_free(Settings* settings) { free(settings); }
 
-void settings_set_property(Settings* settings, char* line)
+enum SETTINGS_VERDICT {
+    SETTINGS_OKAY,
+    SETTINGS_NOT_ASSIGNED,
+    SETTINGS_BAD_VALUE,
+    SETTINGS_CANNOT_READ
+};
+
+int settings_set_property(Settings* settings, char* line)
 {
+    int* property = NULL;
+    int offset = 0;
     if (strncmp("MAX_CUSTOMER_TIME=", line, 18) == 0) {
-        settings->max_customer_time = atoi(line + 18);
+        property = &settings->max_customer_time;
+        offset = 18;
     } else if (strncmp("MAX_CASHIER_QUEUE=", line, 18) == 0) {
-        settings->max_cashier_queue = atoi(line + 18);
+        property = &settings->max_cashier_queue;
+        offset = 18;
     } else if (strncmp("MAX_CASHIERS=", line, 13) == 0) {
-        settings->max_cashiers = atoi(line + 13);
+        property = &settings->max_cashiers;
+        offset = 13;
     } else if (strncmp("MAX_NEXT_CUSTOMERS=", line, 19) == 0) {
-        settings->max_next_customers = atoi(line + 19);
+        property = &settings->max_next_customers;
+        offset = 19;
+    }
+    if (is_valid_int(line + offset)) {
+        int value = atoi(line + offset);
+        if (value < 0) {
+            return SETTINGS_BAD_VALUE;
+        }
+        *property = value;
+        return SETTINGS_OKAY;
+    } else {
+        return SETTINGS_BAD_VALUE;
     }
 }
 
-bool settings_read_from_file(Settings* settings)
+int settings_read_from_file(Settings* settings)
 {
     FILE* fin = fopen("settings.txt", "r");
     if (fin == NULL) {
-        return false;
+        settings->error = true;
+        return SETTINGS_CANNOT_READ;
     }
     const size_t len_max = 300;
     char* line = (char*)malloc(len_max);
     size_t len = 0;
     while (fgets(line, len_max, fin) != NULL) {
-        settings_set_property(settings, line);
+        if (settings_set_property(settings, line)
+            == SETTINGS_BAD_VALUE) {
+            settings->error = true;
+            fclose(fin);
+            free(line);
+            return SETTINGS_BAD_VALUE;
+        }
     }
     fclose(fin);
     if (line) {
         free(line);
     }
-    return true;
+    settings->error = false;
+    return SETTINGS_OKAY;
 }
 
 bool settings_are_all_properties_assigned(Settings* settings)
 {
     return settings->max_customer_time > 0
         && settings->max_cashier_queue > 0
-        && settings->max_cashiers > 0 && settings->max_next_customers;
+        && settings->max_cashiers > 0
+        && settings->max_next_customers > 0;
 }
 
 void settings_print(Settings* settings)
@@ -466,27 +533,28 @@ void settings_print(Settings* settings)
         settings->max_cashiers, settings->max_next_customers);
 }
 
-/*
- * Util
- */
-void poka_durak()
-{
-    printf("POKA, DURAK");
-    exit(EXIT_FAILURE);
-}
-
 int main()
 {
     Settings* settings = settings_new();
-    if (!settings_read_from_file(settings)) {
-        printf("I can't read settings.txt");
+    switch (settings_read_from_file(settings)) {
+    case SETTINGS_CANNOT_READ:
+        printf("I can't read settings file\n");
+        break;
+    case SETTINGS_BAD_VALUE:
+        printf("Some bad value in settings file\n");
+        break;
+    }
+
+    if (settings->error) {
         poka_durak();
+        settings_free(settings);
     }
 
     settings_print(settings);
 
     if (!settings_are_all_properties_assigned(settings)) {
-        printf("Some property is not assigned.");
+        printf("Some property is not assigned.\n");
+        settings_free(settings);
         poka_durak();
     }
 
