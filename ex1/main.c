@@ -489,7 +489,7 @@ int settings_set_property(Settings* settings, char* line)
     }
 }
 
-int settings_read_from_file(Settings* settings, char *settings_path)
+int settings_read_from_file(Settings* settings, char* settings_path)
 {
     FILE* fin = fopen(settings_path, "r");
     if (fin == NULL) {
@@ -533,8 +533,9 @@ void settings_print(Settings* settings)
         settings->max_cashiers, settings->max_next_customers);
 }
 
-int main(int argc, char * argv[]) {
-    char *settings_path = NULL;
+int main(int argc, char* argv[])
+{
+    char* settings_path = NULL;
 
     if (argc >= 2) {
         settings_path = argv[1];
