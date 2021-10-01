@@ -36,8 +36,21 @@ bool is_valid_int(char* str)
 
 void poka_durak()
 {
-    printf("POKA, DURAK");
-    exit(EXIT_FAILURE);
+    printf("\
+   ____       U  ___ u    _  __        _                    \n\
+ U|  _\"\\ u     \\/\"_ \\/   |\"|/ /    U  /\"\\  u        \n\
+ \\| |_) |/     | | | |   | \' /      \\/ _ \\/             \n\
+  |  __/   .-,_| |_| | U/| . \\\\u    / ___ \\              \n\
+  |_|       \\_)-\\___/    |_|\\_\\    /_/   \\_\\          \n\
+  ||>>_          \\\\    ,-,>> \\\\,-.  \\\\    >>          \n\
+ (__)__)        (__)    \\.)   (_/  (__)  (__)              \n\
+  ____       _   _     ____         _         _  __         \n\
+ |  _\"\\   U |\"|u| | U |  _\"\\ u  U  /\"\\  u    |\"|/ / \n\
+/| | | |   \\| |\\| |  \\| |_) |/   \\/ _ \\/     | \' /    \n\
+U| |_| |\\   | |_| |   |  _ <     / ___ \\   U/| . \\\\u    \n\
+ |____/ u  <<\\___/    |_| \\_\\   /_/   \\_\\    |_|\\_\\  \n\
+  |||_    (__) )(     //   \\\\_   \\\\    >>  ,-,>> \\\\,-.\n\
+ (__)_)       (__)   (__)  (__) (__)  (__)  \\.)   (_/");
 }
 
 /*
@@ -557,8 +570,9 @@ int main(int argc, char* argv[])
     }
 
     if (settings->error) {
-        poka_durak();
         settings_free(settings);
+        poka_durak();
+        return EXIT_FAILURE;
     }
 
     settings_print(settings);
@@ -567,6 +581,7 @@ int main(int argc, char* argv[])
         printf("Some property is not assigned.\n");
         settings_free(settings);
         poka_durak();
+        return EXIT_FAILURE;
     }
 
     Market* market = market_new(
@@ -620,7 +635,8 @@ int main(int argc, char* argv[])
         printf("\n");
 
         if (market_can_push_queue(market, next_customers)) {
-            printf("GAME OVER\nPOKA, DURAK");
+            printf("GAME OVER\n");
+            poka_durak();
             queue_free(next_customers);
             break;
         }
