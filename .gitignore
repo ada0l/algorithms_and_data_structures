@@ -1,4 +1,11 @@
+.idea
+
 cmake-build-debug
 cmakelists.txt
-a.out
-.idea
+
+*.out
+*.exe
+
+*/valgrind-out.txt
+
+ex1/settings.txt
