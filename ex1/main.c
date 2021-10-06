@@ -5,6 +5,8 @@
 
 #if !_WIN32
 #include <unistd.h>
+#else
+#include <windows.h>
 #endif
 
 /*
@@ -648,6 +650,8 @@ int main(int argc, char* argv[])
 
 #if !_WIN32
         sleep(1);
+#else
+        Sleep(1000);
 #endif
 
 #if __unix__ || __linux__ || __APPLE__ || __MACH__
