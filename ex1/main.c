@@ -22,7 +22,7 @@ int get_count_of_digits(int number)
     return count;
 }
 
-bool is_valid_int(char* str)
+bool char_ptr_is_valid_int(char* str)
 {
     int len = strlen(str) - 1;
     if (len == 0) {
@@ -475,32 +475,46 @@ enum SETTINGS_VERDICT {
     SETTINGS_OKAY,
     SETTINGS_NOT_ASSIGNED,
     SETTINGS_BAD_VALUE,
-    SETTINGS_CANNOT_READ
+    SETTINGS_CANNOT_READ,
+    SETTINGS_INVALID_ARGUMENT
 };
+
+int* settings_get_property_pointer(
+    Settings* settings, char* line, int index_of_equal_char)
+{
+    if (strncmp("MAX_CUSTOMER_TIME=", line, 17) == 0) {
+        return &settings->max_customer_time;
+    }
+    if (strncmp("MAX_CASHIER_QUEUE=", line, 18) == 0) {
+        return &settings->max_cashier_queue;
+    }
+    if (strncmp("MAX_CASHIERS=", line, 12) == 0) {
+        return &settings->max_cashiers;
+    }
+    if (strncmp("MAX_NEXT_CUSTOMERS=", line, 18) == 0) {
+        return &settings->max_next_customers;
+    }
+
+    return NULL;
+}
 
 int settings_set_property(Settings* settings, char* line)
 {
-    int* property = NULL;
-    int offset = 0;
-    if (strncmp("MAX_CUSTOMER_TIME=", line, 18) == 0) {
-        property = &settings->max_customer_time;
-        offset = 18;
-    } else if (strncmp("MAX_CASHIER_QUEUE=", line, 18) == 0) {
-        property = &settings->max_cashier_queue;
-        offset = 18;
-    } else if (strncmp("MAX_CASHIERS=", line, 13) == 0) {
-        property = &settings->max_cashiers;
-        offset = 13;
-    } else if (strncmp("MAX_NEXT_CUSTOMERS=", line, 19) == 0) {
-        property = &settings->max_next_customers;
-        offset = 19;
+    char* pointer_of_equal_char = strchr(line, '=');
+
+    if (pointer_of_equal_char == NULL)
+        return SETTINGS_INVALID_ARGUMENT;
+
+    int index_of_equal_char = (int)(pointer_of_equal_char - line);
+    int* property = settings_get_property_pointer(
+        settings, line, index_of_equal_char);
+
+    if (property == NULL) {
+        return SETTINGS_INVALID_ARGUMENT;
     }
-    if (is_valid_int(line + offset)) {
-        int value = atoi(line + offset);
-        if (value < 0) {
-            return SETTINGS_BAD_VALUE;
-        }
-        *property = value;
+
+    if (char_ptr_is_valid_int(line + index_of_equal_char + 1)) {
+        *property = atoi(line + index_of_equal_char + 1);
         return SETTINGS_OKAY;
     } else {
         return SETTINGS_BAD_VALUE;
@@ -518,12 +532,12 @@ int settings_read_from_file(Settings* settings, char* settings_path)
     char* line = (char*)malloc(len_max);
     size_t len = 0;
     while (fgets(line, len_max, fin) != NULL) {
-        if (settings_set_property(settings, line)
-            == SETTINGS_BAD_VALUE) {
+        int answer = settings_set_property(settings, line);
+        if (answer != SETTINGS_OKAY) {
             settings->error = true;
             fclose(fin);
             free(line);
-            return SETTINGS_BAD_VALUE;
+            return answer;
         }
     }
     fclose(fin);
@@ -568,6 +582,9 @@ int main(int argc, char* argv[])
         break;
     case SETTINGS_BAD_VALUE:
         printf("Some bad value in settings file\n");
+        break;
+    case SETTINGS_INVALID_ARGUMENT:
+        printf("Invalid argument");
         break;
     }
 
