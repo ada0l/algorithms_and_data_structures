@@ -156,7 +156,7 @@ void card_print(Card* card, int iteration)
     } else if (iteration == 1 && c_value == 0) {
         wprintf(L"│%2d       │", card->value);
     } else if (iteration == 1 && c_value != 0) {
-        wprintf(L"│%lc       │", c_value);
+        wprintf(L"│%3lc     │", c_value);
     } else if (2 <= iteration && iteration <= 6
         && card_is_number(card)) {
         wprintf(CARD_PRINT_PATTERN[card->value][iteration
@@ -167,7 +167,7 @@ void card_print(Card* card, int iteration)
     } else if (iteration == 7 && c_value == 0) {
         wprintf(L"│      %2d │", card->value);
     } else if (iteration == 7 && c_value != 0) {
-        wprintf(L"│      %lc │", c_value);
+        wprintf(L"│    %3lc │", c_value);
     } else if (iteration == 8) {
         wprintf(L"└─────────┘");
     } else {
