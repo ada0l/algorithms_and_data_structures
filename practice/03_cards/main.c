@@ -38,6 +38,9 @@ int main()
         console_clear();
         black_jack_print(black_jack);
         while (true) {
+            if (black_jack_count_score(black_jack->player) >= 21) {
+                break;
+            }
             if (console_yes_or_no("Do you want to take card?")) {
                 black_jack_take_by_player(black_jack);
                 console_clear();
