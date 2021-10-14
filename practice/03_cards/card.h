@@ -37,6 +37,7 @@ typedef struct Card {
 
 Card* card_new(int suit, int value);
 void card_free(Card* card);
+bool card_is_number(Card* card);
 wchar_t card_get_char_of_value(Card* card);
 wchar_t card_get_char_of_suit(Card* card);
 void card_print(Card* card, int iteration);
