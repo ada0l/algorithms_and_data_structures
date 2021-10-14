@@ -11,14 +11,10 @@ int main()
 {
     srand(time(NULL));
     setlocale(LC_ALL, "en_US.utf8");
-    Queue* queue = card_new_queue();
-    wprintf(L"size: %d\n", queue->size);
-
-    queue_card_print(queue);
-    queue_shuffle(queue);
-    wprintf(L"\n");
+    Queue* queue = queue_new();
+    queue_push_back(queue, card_new(CARD_SUIT_DIAMOND, CARD_VALUE_SIX));
+    queue_push_back(queue, card_new(CARD_SUIT_DIAMOND, CARD_VALUE_QUEEN));
     queue_card_print(queue);
     queue_free(queue);
-
     return EXIT_SUCCESS;
 }
