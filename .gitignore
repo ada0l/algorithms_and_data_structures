@@ -13,3 +13,6 @@ main
 valgrind-out.txt
 
 ex1/settings.txt
+
+*.ilk
+*.pdb
