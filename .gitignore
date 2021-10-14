@@ -6,6 +6,6 @@ cmakelists.txt
 *.out
 *.exe
 
-*/valgrind-out.txt
+valgrind-out.txt
 
 ex1/settings.txt
