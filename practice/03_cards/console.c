@@ -41,11 +41,11 @@ bool console_yes_or_no(char* str)
 {
     size_t buffer_size = 10;
     wchar_t buffer[buffer_size];
-    wprintf(L"%s [y/n]", str);
+    wprintf(L"%s [y/n] ", str);
     wscanf(L"%ls", buffer);
     int answer;
     while ((answer = console_check_answer(buffer)) == -1) {
-        wprintf(L"%s [y/n] %d", str, answer);
+        wprintf(L"%s [y/n] ", str);
         wscanf(L"%ls", buffer);
     }
     return answer;
