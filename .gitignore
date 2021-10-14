@@ -1,7 +1,11 @@
 .idea
 
 cmake-build-debug
-cmakelists.txt
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+main
 
 *.out
 *.exe
