@@ -43,5 +43,6 @@ void card_print(Card* card, int iteration);
 void card_print_simple(Card* card);
 Queue* card_new_queue();
 void queue_card_print(Queue* queue);
+void queue_card_print_simple(Queue* queue);
 
 #endif

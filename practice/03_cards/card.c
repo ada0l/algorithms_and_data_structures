@@ -201,6 +201,18 @@ Queue* card_new_queue()
 
 void queue_card_print(Queue* queue)
 {
+    for (int i = 0; i <= CARD_PRINT_ITERATIONS; ++i) {
+        for (QueueNode* node = queue->beg->next;
+             queue_is_node_dereferenable(queue, node);
+             node = node->next) {
+            card_print(node->data, i);
+        }
+        wprintf(L"\n");
+    }
+}
+
+void queue_card_print_simple(Queue* queue)
+{
     for (QueueNode* node = queue->beg->next; node != queue->end;
          node = node->next) {
         card_print_simple(node->data);
