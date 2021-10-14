@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <wchar.h>
 
+const int BLACK_JACK_MAX_SCORE = 21;
+const int BLACK_JACK_DEALER_BOUND = 17;
+
 BlackJack* black_jack_new()
 {
     BlackJack* black_jack = (BlackJack*)malloc(sizeof(BlackJack));
@@ -45,19 +48,20 @@ int black_jack_get_verdict(BlackJack* black_jack, bool force_compute)
 {
     int dealer_score = black_jack_count_score(black_jack->dealer);
     int player_score = black_jack_count_score(black_jack->player);
-    if (dealer_score > 21 && player_score > 21) {
+    if (dealer_score > BLACK_JACK_MAX_SCORE
+        && player_score > BLACK_JACK_MAX_SCORE) {
         return BLACK_JACK_DRAW;
     }
-    if (dealer_score > 21) {
+    if (dealer_score > BLACK_JACK_MAX_SCORE) {
         return BLACK_JACK_PLAYER_WIN;
     }
-    if (dealer_score == 21) {
+    if (dealer_score == BLACK_JACK_MAX_SCORE) {
         return BLACK_JACK_DEALER_WIN;
     }
-    if (player_score > 21) {
+    if (player_score > BLACK_JACK_MAX_SCORE) {
         return BLACK_JACK_DEALER_WIN;
     }
-    if (player_score == 21) {
+    if (player_score == BLACK_JACK_MAX_SCORE) {
         return BLACK_JACK_PLAYER_WIN;
     }
     if (force_compute) {
@@ -72,9 +76,16 @@ int black_jack_get_verdict(BlackJack* black_jack, bool force_compute)
     return BLACK_JACK_CONTINUE;
 }
 
+bool black_jack_can_player_take_the_card(BlackJack* black_jack)
+{
+    return black_jack_count_score(black_jack->player)
+        >= BLACK_JACK_MAX_SCORE;
+}
+
 bool black_jack_dealer_want_take_card(BlackJack* black_jack)
 {
-    return black_jack_count_score(black_jack->dealer) < 17;
+    return black_jack_count_score(black_jack->dealer)
+        < BLACK_JACK_DEALER_BOUND;
 }
 
 void black_jack_take_card(BlackJack* black_jack, Queue* queue)

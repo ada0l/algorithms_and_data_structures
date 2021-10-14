@@ -37,11 +37,11 @@ int console_check_answer(wchar_t* str)
     }
 }
 
-bool console_yes_or_no(char* str)
+bool console_yes_or_no(wchar_t* str)
 {
     size_t buffer_size = 10;
     wchar_t buffer[buffer_size];
-    wprintf(L"%s [y/n] ", str);
+    wprintf(L"%ls [y/n] ", str);
     wscanf(L"%ls", buffer);
     int answer;
     while ((answer = console_check_answer(buffer)) == -1) {

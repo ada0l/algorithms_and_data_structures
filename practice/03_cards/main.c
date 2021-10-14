@@ -6,9 +6,7 @@
 #include <wchar.h>
 
 #include "blackjack.h"
-#include "card.h"
 #include "console.h"
-#include "queue.h"
 
 #if !_WIN32
 #include <unistd.h>
@@ -38,10 +36,10 @@ int main()
         console_clear();
         black_jack_print(black_jack);
         while (true) {
-            if (black_jack_count_score(black_jack->player) >= 21) {
+            if (black_jack_can_player_take_the_card(black_jack)) {
                 break;
             }
-            if (console_yes_or_no("Do you want to take card?")) {
+            if (console_yes_or_no(L"Do you want to take card?")) {
                 black_jack_take_by_player(black_jack);
                 console_clear();
                 black_jack_print(black_jack);
@@ -76,7 +74,7 @@ int main()
             break;
         }
 
-        if (console_yes_or_no("Do you want to play again?") == 0) {
+        if (console_yes_or_no(L"Do you want to play again?") == 0) {
             break;
         }
     }

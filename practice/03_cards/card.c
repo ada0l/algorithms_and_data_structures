@@ -161,7 +161,7 @@ void card_print(Card* card, int iteration)
         && card_is_number(card)) {
         wprintf(CARD_PRINT_PATTERN[card->value][iteration
                     + CARD_PRINT_PATTERN_OFFSET],
-            c_suit, c_suit);
+            c_suit, c_suit, c_suit);
     } else if (iteration == 4 && !card_is_number(card)) {
         wprintf(L"│    %lc    │", c_suit);
     } else if (iteration == 7 && c_value == 0) {

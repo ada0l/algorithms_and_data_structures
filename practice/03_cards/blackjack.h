@@ -6,6 +6,9 @@
 #include "card.h"
 #include "queue.h"
 
+extern const int BLACK_JACK_MAX_SCORE;
+extern const int BLACK_JACK_DEALER_BOUND;
+
 enum BLACK_JACK_VERDICT {
     BLACK_JACK_DEALER_WIN,
     BLACK_JACK_PLAYER_WIN,
@@ -26,6 +29,8 @@ void black_jack_free(BlackJack* black_jack);
 int black_jack_count_score(Queue* queue);
 
 int black_jack_get_verdict(BlackJack* black_jack, bool force_compute);
+
+bool black_jack_can_player_take_the_card(BlackJack* black_jack);
 
 bool black_jack_dealer_want_take_card(BlackJack* black_jack);
 
