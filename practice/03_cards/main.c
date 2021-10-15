@@ -7,6 +7,7 @@
 
 #include "blackjack.h"
 #include "console.h"
+#include "logger.h"
 
 #if !_WIN32
 #include <unistd.h>
@@ -28,7 +29,12 @@ int main()
 {
     srand(time(NULL));
     setlocale(LC_ALL, "en_US.utf8");
-    BlackJack* black_jack = black_jack_new();
+    FILE *file = fopen("black_jack.log", "a");
+    if (file == NULL) {
+        wprintf(L"I can't open black_jack.log");
+        exit(EXIT_FAILURE);
+    }
+    BlackJack* black_jack = black_jack_new(file);
     while (true) {
         black_jack_fold_all_cards(black_jack);
         black_jack_shuffle(black_jack);
@@ -62,6 +68,7 @@ int main()
         black_jack_print(black_jack);
 
         int verdict = black_jack_get_verdict(black_jack, true);
+        char *asd;
         switch (verdict) {
         case BLACK_JACK_DEALER_WIN:
             wprintf(L"Dealer is win\n");

@@ -2,6 +2,7 @@
 #define BLACKJACK_HEADER_FILE_H
 
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "card.h"
 #include "queue.h"
@@ -20,9 +21,10 @@ typedef struct BlackJack {
     Queue* desk_of_cards;
     Queue* dealer;
     Queue* player;
+    FILE *log_file;
 } BlackJack;
 
-BlackJack* black_jack_new();
+BlackJack* black_jack_new(FILE *log_file);
 
 void black_jack_free(BlackJack* black_jack);
 

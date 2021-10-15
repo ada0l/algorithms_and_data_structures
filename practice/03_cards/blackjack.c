@@ -1,16 +1,19 @@
 #include "blackjack.h"
+#include "logger.h"
 #include <stdio.h>
 #include <wchar.h>
 
 const int BLACK_JACK_MAX_SCORE = 21;
 const int BLACK_JACK_DEALER_BOUND = 17;
 
-BlackJack* black_jack_new()
+BlackJack* black_jack_new(FILE *log_file)
 {
     BlackJack* black_jack = (BlackJack*)malloc(sizeof(BlackJack));
     black_jack->desk_of_cards = card_new_queue();
     black_jack->dealer = queue_new();
     black_jack->player = queue_new();
+    black_jack->log_file = log_file;
+    logger_print(black_jack->log_file, "Game is started");
     return black_jack;
 }
 
@@ -95,11 +98,13 @@ void black_jack_take_card(BlackJack* black_jack, Queue* queue)
 
 void black_jack_take_by_player(BlackJack* black_jack)
 {
+    logger_print(black_jack->log_file, "Player take card");
     black_jack_take_card(black_jack, black_jack->player);
 }
 
 void black_jack_take_by_dealer(BlackJack* black_jack)
 {
+    logger_print(black_jack->log_file, "Dealer take card");
     black_jack_take_card(black_jack, black_jack->dealer);
 }
 
@@ -115,6 +120,7 @@ void black_jack_deal_cards(BlackJack* black_jack)
 
 void black_jack_fold_all_cards(BlackJack* black_jack)
 {
+    logger_print(black_jack->log_file, "Fold all cards");
     while (black_jack->dealer->size > 0) {
         queue_push_back(black_jack->desk_of_cards,
             queue_pop_back(black_jack->dealer));
@@ -127,6 +133,7 @@ void black_jack_fold_all_cards(BlackJack* black_jack)
 
 void black_jack_shuffle(BlackJack* black_jack)
 {
+    logger_print(black_jack->log_file, "Shuffle cards");
     queue_shuffle(black_jack->desk_of_cards);
 }
 
