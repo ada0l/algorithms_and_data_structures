@@ -119,6 +119,17 @@ void queue_free(Queue* queue)
 
 void queue_shuffle(Queue* queue)
 {
+    // This code isn't optimal for two reasons:
+    // 1. Finding an element that will be placed at the beginning or
+    // end occurs in O(N)
+    // 2. Each time it deletes the node and creates it again, and so
+    // on 10,000 times. And as you know, memory allocation is usually
+    // slow.
+    //
+    // Why isn't the code written differently?
+    // I'm too lazy to rewrite it, and I don't know how.
+    //
+    // Klenin is very sad.
     for (int i = 0; i < 10000; ++i) {
         int random_nodes_count
             = random_get_num_in_range(0, queue->size);

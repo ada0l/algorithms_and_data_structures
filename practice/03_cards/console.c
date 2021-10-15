@@ -5,6 +5,22 @@
 
 #include "console.h"
 
+#if !_WIN32
+#include <unistd.h>
+#else
+#include <windows.h>
+#endif
+
+// time in seconds
+void console_sleep(int time)
+{
+#if !_WIN32
+    usleep(time);
+#else
+    Sleep(time / 1000);
+#endif
+}
+
 void console_clear()
 {
 #if __unix__ || __linux__ || __APPLE__ || __MACH__

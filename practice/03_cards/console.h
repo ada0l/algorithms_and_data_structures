@@ -2,6 +2,9 @@
 #define CONSOLE_HEADER_FILE_H
 
 #include <wchar.h>
+#include <stdbool.h>
+
+void console_sleep(int time);
 
 void console_clear();
 

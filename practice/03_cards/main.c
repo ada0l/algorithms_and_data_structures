@@ -8,22 +8,7 @@
 #include "blackjack.h"
 #include "console.h"
 #include "logger.h"
-
-#if !_WIN32
-#include <unistd.h>
-#else
-#include <windows.h>
-#endif
-
-// time in seconds
-void _sleep_(int time)
-{
-#if !_WIN32
-    sleep(time);
-#else
-    Sleep(time * 1000);
-#endif
-}
+#include "girl_art.h"
 
 int main()
 {
@@ -35,6 +20,7 @@ int main()
         exit(EXIT_FAILURE);
     }
     BlackJack* black_jack = black_jack_new(file);
+    girl_art_show();
     while (true) {
         black_jack_fold_all_cards(black_jack);
         black_jack_shuffle(black_jack);
@@ -58,7 +44,7 @@ int main()
         black_jack_print(black_jack);
 
         while (black_jack_dealer_want_take_card(black_jack)) {
-            _sleep_(1);
+            console_sleep(1000000);
             black_jack_take_by_dealer(black_jack);
             console_clear();
             black_jack_print(black_jack);
@@ -71,7 +57,7 @@ int main()
         char *asd;
         switch (verdict) {
         case BLACK_JACK_DEALER_WIN:
-            wprintf(L"Dealer is win\n");
+            wprintf(L"Dealer is win %lc\n", 0x1F62D);
             break;
         case BLACK_JACK_PLAYER_WIN:
             wprintf(L"Player is win\n");
