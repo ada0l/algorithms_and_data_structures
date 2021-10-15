@@ -348,7 +348,6 @@ void market_add_new_customer(Market* market, Customer* customers)
             priority_cashbox->is_work = true;
         }
         queue_push(priority_cashbox->queue, customers);
-        ++priority_cashbox->num_of_served_customers;
     }
 }
 
