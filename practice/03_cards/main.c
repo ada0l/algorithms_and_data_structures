@@ -20,13 +20,13 @@ int main()
         exit(EXIT_FAILURE);
     }
     BlackJack* black_jack = black_jack_new(file);
-    girl_art_show();
+    //girl_art_show();
     while (true) {
         black_jack_fold_all_cards(black_jack);
         black_jack_shuffle(black_jack);
         black_jack_deal_cards(black_jack);
         console_clear();
-        black_jack_print(black_jack);
+        black_jack_print(stdout, black_jack);
         while (true) {
             if (black_jack_can_player_take_the_card(black_jack)) {
                 break;
@@ -34,24 +34,24 @@ int main()
             if (console_yes_or_no(L"Do you want to take card?")) {
                 black_jack_take_by_player(black_jack);
                 console_clear();
-                black_jack_print(black_jack);
+                black_jack_print(stdout, black_jack);
             } else {
                 break;
             }
         }
 
         console_clear();
-        black_jack_print(black_jack);
+        black_jack_print(stdout, black_jack);
 
         while (black_jack_dealer_want_take_card(black_jack)) {
             console_sleep(1000000);
             black_jack_take_by_dealer(black_jack);
             console_clear();
-            black_jack_print(black_jack);
+            black_jack_print(stdout, black_jack);
         }
 
         console_clear();
-        black_jack_print(black_jack);
+        black_jack_print(stdout, black_jack);
 
         int verdict = black_jack_get_verdict(black_jack, true);
         char *asd;

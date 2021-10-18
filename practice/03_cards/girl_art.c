@@ -67,7 +67,7 @@ void girl_art_show()
     const int count_of_frames = 3;
     const wchar_t* girl_art_frames[3]
         = { GIRL_ART_FRAME_1, GIRL_ART_FRAME_2, GIRL_ART_FRAME_3 };
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 5; ++i) {
         for (int frame = 0; frame < count_of_frames; ++frame) {
             console_clear();
             wprintf(girl_art_frames[frame]);

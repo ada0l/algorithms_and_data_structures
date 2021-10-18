@@ -2,6 +2,7 @@
 #define CARD_HEADER_FILE_H
 
 #include "queue.h"
+#include <stdio.h>
 
 extern const int CARD_PRINT_ITERATIONS;
 extern const int CARD_PRINT_PATTERN_OFFSET;
@@ -40,10 +41,11 @@ void card_free(Card* card);
 bool card_is_number(Card* card);
 wchar_t card_get_char_of_value(Card* card);
 wchar_t card_get_char_of_suit(Card* card);
-void card_print(Card* card, int iteration);
-void card_print_simple(Card* card);
+wchar_t* card_to_wchar_t_ptr(Card* card);
+void card_print(FILE* file, Card* card, int iteration);
+void card_print_simple(FILE* file, Card* card);
 Queue* card_new_queue();
-void queue_card_print(Queue* queue);
-void queue_card_print_simple(Queue* queue);
+void queue_card_print(FILE* file, Queue* queue);
+void queue_card_print_simple(FILE* file, Queue* queue);
 
 #endif

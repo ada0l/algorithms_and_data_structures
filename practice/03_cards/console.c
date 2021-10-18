@@ -1,7 +1,8 @@
-#include <stdlib.h>
-#include <wctype.h>
-#include <wchar.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <wchar.h>
+#include <wctype.h>
 
 #include "console.h"
 
@@ -58,11 +59,15 @@ bool console_yes_or_no(wchar_t* str)
     size_t buffer_size = 10;
     wchar_t buffer[buffer_size];
     wprintf(L"%ls [y/n] ", str);
-    wscanf(L"%ls", buffer);
+    if (wscanf(L"%ls", buffer) == EOF) {
+        return -1;
+    }
     int answer;
     while ((answer = console_check_answer(buffer)) == -1) {
         wprintf(L"%s [y/n] ", str);
-        wscanf(L"%ls", buffer);
+        if (wscanf(L"%ls", buffer) == EOF) {
+            return -1;
+        }
     }
     return answer;
 }

@@ -122,7 +122,7 @@ wchar_t card_get_char_of_value(Card* card)
 
 wchar_t card_get_char_of_suit(Card* card)
 {
-    wchar_t c;
+    wchar_t c = 0;
     switch (card->suit) {
     case CARD_SUIT_DIAMOND:
         c = 0x2666;
@@ -139,6 +139,22 @@ wchar_t card_get_char_of_suit(Card* card)
     }
     return c;
 }
+wchar_t* card_to_wchar_t_ptr(Card* card)
+{
+    wchar_t* buffer = (wchar_t*)malloc(sizeof(wchar_t) * 4);
+    buffer[0] = card_get_char_of_suit(card);
+    wchar_t value = card_get_char_of_value(card);
+    if (value != 0) {
+        buffer[1] = value;
+        buffer[2] = '\0';
+    } else {
+        buffer[1] = (card->value / 10 != 0) ? '0' + (card->value / 10)
+                                            : ' ';
+        buffer[2] = '0' + (card->value % 10);
+        buffer[3] = '\0';
+    }
+    return buffer;
+}
 
 bool card_is_number(Card* card)
 {
@@ -146,43 +162,44 @@ bool card_is_number(Card* card)
         && card->value <= CARD_VALUE_TEN;
 }
 
-void card_print(Card* card, int iteration)
+void card_print(FILE* file, Card* card, int iteration)
 {
     wchar_t c_value = card_get_char_of_value(card);
     wchar_t c_suit = card_get_char_of_suit(card);
 
     if (iteration == 0) {
-        wprintf(L"┌─────────┐");
+        fwprintf(file, L"┌─────────┐");
     } else if (iteration == 1 && c_value == 0) {
-        wprintf(L"│%2d       │", card->value);
+        fwprintf(file, L"│%2d       │", card->value);
     } else if (iteration == 1 && c_value != 0) {
-        wprintf(L"│%3lc     │", c_value);
+        fwprintf(file, L"│%3lc     │", c_value);
     } else if (2 <= iteration && iteration <= 6
         && card_is_number(card)) {
-        wprintf(CARD_PRINT_PATTERN[card->value][iteration
-                    + CARD_PRINT_PATTERN_OFFSET],
+        fwprintf(file,
+            CARD_PRINT_PATTERN[card->value]
+                              [iteration + CARD_PRINT_PATTERN_OFFSET],
             c_suit, c_suit, c_suit);
     } else if (iteration == 4 && !card_is_number(card)) {
-        wprintf(L"│    %lc    │", c_suit);
+        fwprintf(file, L"│    %lc    │", c_suit);
     } else if (iteration == 7 && c_value == 0) {
-        wprintf(L"│      %2d │", card->value);
+        fwprintf(file, L"│      %2d │", card->value);
     } else if (iteration == 7 && c_value != 0) {
-        wprintf(L"│    %3lc │", c_value);
+        fwprintf(file, L"│    %3lc │", c_value);
     } else if (iteration == 8) {
-        wprintf(L"└─────────┘");
+        fwprintf(file, L"└─────────┘");
     } else {
-        wprintf(L"│         │");
+        fwprintf(file, L"│         │");
     }
 }
 
-void card_print_simple(Card* card)
+void card_print_simple(FILE* file, Card* card)
 {
     wchar_t c_value = card_get_char_of_value(card);
     wchar_t c_suit = card_get_char_of_suit(card);
     if (c_value) {
-        wprintf(L"%lc%lc", c_suit, c_value);
+        fwprintf(file, L"%lc%lc", c_suit, c_value);
     } else {
-        wprintf(L"%lc%d", c_suit, card->value);
+        fwprintf(file, L"%lc%d", c_suit, card->value);
     }
 }
 
@@ -199,23 +216,23 @@ Queue* card_new_queue()
     return queue;
 }
 
-void queue_card_print(Queue* queue)
+void queue_card_print(FILE* file, Queue* queue)
 {
     for (int i = 0; i <= CARD_PRINT_ITERATIONS; ++i) {
         for (QueueNode* node = queue->beg->next;
              queue_is_node_dereferenable(queue, node);
              node = node->next) {
-            card_print(node->data, i);
+            card_print(file, node->data, i);
         }
-        wprintf(L"\n");
+        fwprintf(file, L"\n");
     }
 }
 
-void queue_card_print_simple(Queue* queue)
+void queue_card_print_simple(FILE* file, Queue* queue)
 {
     for (QueueNode* node = queue->beg->next; node != queue->end;
          node = node->next) {
-        card_print_simple(node->data);
-        wprintf(L" ");
+        card_print_simple(file, node->data);
+        fwprintf(file, L" ");
     }
 }

@@ -48,6 +48,6 @@ void black_jack_fold_all_cards(BlackJack* black_jack);
 
 void black_jack_shuffle(BlackJack* black_jack);
 
-void black_jack_print(BlackJack* black_jack);
+void black_jack_print(FILE *file, BlackJack* black_jack);
 
 #endif
