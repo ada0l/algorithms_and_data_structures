@@ -23,9 +23,10 @@ void black_jack_free(BlackJack* black_jack)
     queue_free(black_jack->desk_of_cards);
     queue_free(black_jack->dealer);
     queue_free(black_jack->player);
-    free(black_jack);
     logger_print(black_jack->log_file, L"BlackJack is stoped", NULL);
     fflush(black_jack->log_file);
+    fclose(black_jack->log_file);
+    free(black_jack);
 }
 
 int black_jack_count_score(Queue* queue)
