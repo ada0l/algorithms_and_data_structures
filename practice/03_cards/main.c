@@ -7,20 +7,20 @@
 
 #include "blackjack.h"
 #include "console.h"
-#include "logger.h"
 #include "girl_art.h"
+#include "logger.h"
 
 int main()
 {
     srand(time(NULL));
     setlocale(LC_ALL, "en_US.utf8");
-    FILE *file = fopen("black_jack.log", "a");
+    FILE* file = fopen("black_jack.log", "a");
     if (file == NULL) {
         wprintf(L"I can't open black_jack.log");
         exit(EXIT_FAILURE);
     }
     BlackJack* black_jack = black_jack_new(file);
-    //girl_art_show();
+    girl_art_show();
     while (true) {
         black_jack_fold_all_cards(black_jack);
         black_jack_shuffle(black_jack);
@@ -43,7 +43,9 @@ int main()
         console_clear();
         black_jack_print(stdout, black_jack);
 
-        while (black_jack_dealer_want_take_card(black_jack)) {
+        while (black_jack_get_verdict(black_jack, false)
+                == BLACK_JACK_CONTINUE
+            && black_jack_dealer_want_take_card(black_jack)) {
             console_sleep(1000000);
             black_jack_take_by_dealer(black_jack);
             console_clear();
@@ -54,13 +56,13 @@ int main()
         black_jack_print(stdout, black_jack);
 
         int verdict = black_jack_get_verdict(black_jack, true);
-        char *asd;
+        char* asd;
         switch (verdict) {
         case BLACK_JACK_DEALER_WIN:
             wprintf(L"Dealer is win %lc\n", 0x1F62D);
             break;
         case BLACK_JACK_PLAYER_WIN:
-            wprintf(L"Player is win\n");
+            wprintf(L"Player is win %lc\n", 0x1F680);
             break;
         case BLACK_JACK_DRAW:
             wprintf(L"Draw\n");
